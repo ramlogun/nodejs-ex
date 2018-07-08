@@ -1,6 +1,7 @@
 //  OpenShift sample Node application
 var express = require('express'),
     app     = express(),
+    fs      = require('fs');
     morgan  = require('morgan');
     
 Object.assign=require('object-assign')
@@ -106,3 +107,22 @@ app.listen(port, ip);
 console.log('Server running on http://%s:%s', ip, port);
 
 module.exports = app ;
+
+  // Web app logic
+  routes = {};
+  routes['health'] = function(req, res){ res.send('1'); };
+  
+  //self.routes['root'] = function(req, res){res.send('You have come to the park apps web service. All the web services are at /ws/parks*. For example /ws/parks will return all the parks in the system in a JSON payload. Thanks for stopping by and have a nice day'); };
+
+  //returns all the parks in the collection
+  routes['returnAllParks'] = function(req, res){
+    db.collection('parkpoints').find().toArray(function(err, names) {
+        res.header("Content-Type:","application/json");
+        res.end(JSON.stringify(names));
+    });
+  };
+
+  //define all the url mappings
+  app.get('/health', self.routes['health']);
+  //self.app.get('/', self.routes['root']);
+  app.get('/ws/parks', self.routes['returnAllParks']);
